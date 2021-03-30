@@ -1,0 +1,77 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "thingsboard.fullname" . }}
+  labels:
+    app: soprism
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  replicas: 1
+  serviceName: {{ template "thingsboard.fullname" . }}
+  selector:
+    matchLabels:
+      app: thingsboard
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: thingsboard
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: {{ .Release.Name | quote }}
+        heritage: {{ .Release.Service | quote }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.image.repository }}/{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 9090
+              protocol: TCP
+            - name: mqtt
+              containerPort: 1883
+              protocol: TCP
+            - name: coap
+              containerPort: 5683
+              protocol: UDP
+          env:
+            - name: TB_QUEUE_TYPE
+              value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_TYPE | quote }}
+            - name: TB_QUEUE_RABBIT_MQ_USERNAME
+              value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_USERNAME | quote }}
+            - name: TB_QUEUE_RABBIT_MQ_PASSWORD
+              value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_PASSWORD | quote }}
+            - name: TB_QUEUE_RABBIT_MQ_HOST
+              value: {{ .Release.Name }}-{{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_HOST }}
+            - name: TB_QUEUE_RABBIT_MQ_PORT
+              value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_PORT | quote }}
+      {{ if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            exec:
+              command:
+                - ls
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+      {{ end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+
+
