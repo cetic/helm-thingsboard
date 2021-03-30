@@ -35,6 +35,6 @@ maintainers:
     url: https://github.com/AyadiAmen
 dependencies:
   - name: rabbitmq
-    version: ~8.11.4
+    version: ~8.11.5
     repository: https://charts.bitnami.com/bitnami
     condition: rabbitmq.enabled
