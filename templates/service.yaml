@@ -11,5 +11,13 @@ spec:
       targetPort: 9090
       protocol: TCP
       name: http
+    - port: 1883
+      targetPort: 1883
+      protocol: TCP
+      name: mqtt
+    - port: 5683
+      targetPort: 5683
+      protocol: UDP
+      name: caop
   selector:
     app: thingsboard
