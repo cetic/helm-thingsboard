@@ -28,14 +28,12 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ . }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
+          - path: .
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-          {{- end }}
+              servicePort: http
     {{- end }}
   {{- end }}
