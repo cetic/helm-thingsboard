@@ -80,7 +80,6 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: thingsboard.test
-      paths: /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
