@@ -26,6 +26,7 @@ rabbitmq:
   auth:
     username: admin
     password: password1
+    erlangCookie: GDFSEKGZNSBRSEIFSRTNSFIKSEKLMEER
   ldap:
     enabled: false
     servers: ldap-server
