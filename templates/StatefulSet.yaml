@@ -47,17 +47,21 @@ spec:
             - name: TB_QUEUE_RABBIT_MQ_PASSWORD
               value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_PASSWORD | quote }}
             - name: TB_QUEUE_RABBIT_MQ_HOST
+              {{- if .Values.rabbitmq.enabled }}
               value: {{ .Release.Name }}-{{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_HOST }}
+              {{- else }}
+              value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_HOST }}
+              {{- end }}
             - name: TB_QUEUE_RABBIT_MQ_PORT
               value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_PORT | quote }}
-      {{ if .Values.readinessProbe.enabled }}
+      {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             exec:
               command:
                 - ls
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-      {{ end }}
+      {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
