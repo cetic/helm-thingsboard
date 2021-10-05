@@ -42,6 +42,10 @@ rabbitmq:
     certManager: false
     hostname: rancher.test
 
+dataMount:
+  enabled: true
+  hostDir: /home/docker/configdb # directory location on host
+  mountPath: /configdb # directory location on pod
 
 readinessProbe:
   enabled: true

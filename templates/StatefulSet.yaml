@@ -23,6 +23,15 @@ spec:
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
     spec:
+      {{ if .Values.dataMount.enabled }}
+      volumes:
+        - name: data-volume
+          hostPath:
+            # directory location on host
+            path: {{ .Values.dataMount.hostDir }}
+            # this field is optional
+            type: Directory
+      {{ end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -50,6 +59,11 @@ spec:
               value: {{ .Release.Name }}-{{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_HOST }}
             - name: TB_QUEUE_RABBIT_MQ_PORT
               value: {{ .Values.TB_RABBIT_MQ.TB_QUEUE_RABBIT_MQ_PORT | quote }}
+      {{ if .Values.dataMount.enabled }}
+          volumeMounts:
+            - mountPath: {{ .Values.dataMount.mountPath }}
+              name: data-volume
+      {{ end }}
       {{ if .Values.readinessProbe.enabled }}
           readinessProbe:
             exec:
@@ -72,6 +86,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
 
 
 
