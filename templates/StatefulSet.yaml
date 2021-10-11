@@ -32,6 +32,15 @@ spec:
             # this field is optional
             type: Directory
       {{ end }}
+      {{ if .Values.dataMount.enabled }}
+      initContainers:
+        - name: fix-ownership
+          image: alpine:3.6
+          command: ["chown", "-R", "799:799", "/data"]
+          volumeMounts:
+            - name: data-volume
+              mountPath: {{ .Values.dataMount.mountPath }}
+      {{ end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -86,7 +95,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
 
 
 
