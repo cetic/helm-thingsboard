@@ -43,7 +43,7 @@ rabbitmq:
     hostname: rancher.test
 
 dataMount:
-  enabled: true
+  enabled: false
   hostDir: /home/docker/data # directory location on host
   mountPath: /data # directory location on pod
 
